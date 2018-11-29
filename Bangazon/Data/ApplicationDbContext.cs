@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 using Bangazon.Models;
 using Microsoft.AspNetCore.Identity;
@@ -61,6 +62,40 @@ namespace Bangazon.Data {
             user.PasswordHash = passwordHash.HashPassword (user, "Admin8*");
             modelBuilder.Entity<ApplicationUser> ().HasData (user);
 
+            ApplicationUser user2 = new ApplicationUser
+            {
+                FirstName = "Jonathan",
+                LastName = "Edwards",
+                StreetAddress = "500 Interstate Blvd S",
+                UserName = "jonathan@edwards.com",
+                NormalizedUserName = "JONATHAN@EDWARDS.COM",
+                Email = "jonathan@edwards.com",
+                NormalizedEmail = "JONATHAN@EDWARDS.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                SecurityStamp = Guid.NewGuid().ToString("D")
+            };
+            var passwordHash2 = new PasswordHasher<ApplicationUser>();
+            user2.PasswordHash = passwordHash2.HashPassword(user2, "edwards*");
+            modelBuilder.Entity<ApplicationUser>().HasData(user2);
+
+            ApplicationUser user3 = new ApplicationUser
+            {
+                FirstName = "Klaus",
+                LastName = "Hardt",
+                StreetAddress = "123 Broadway Ave",
+                UserName = "klaus@hardt.com",
+                NormalizedUserName = "KLAUS@HARDT.COM",
+                Email = "klaus@hardt.com",
+                NormalizedEmail = "KLAUS@HARDT.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                SecurityStamp = Guid.NewGuid().ToString("D")
+            };
+            var passwordHash3 = new PasswordHasher<ApplicationUser>();
+            user3.PasswordHash = passwordHash3.HashPassword(user3, "hardt");
+            modelBuilder.Entity<ApplicationUser>().HasData(user3);
+
             modelBuilder.Entity<PaymentType> ().HasData (
                 new PaymentType () {
                     PaymentTypeId = 1,
@@ -73,7 +108,21 @@ namespace Bangazon.Data {
                         UserId = user.Id,
                         Description = "Discover",
                         AccountNumber = "4102948572991"
-                }
+                },
+                 new PaymentType()
+                 {
+                     PaymentTypeId = 3,
+                     UserId = user.Id,
+                     Description = "PayPal",
+                     AccountNumber = "9991338572001"
+                 },
+                  new PaymentType()
+                  {
+                      PaymentTypeId = 4,
+                      UserId = user.Id,
+                      Description = "Suntrust",
+                      AccountNumber = "6931532582403"
+                  }
             );
 
             modelBuilder.Entity<ProductType> ().HasData (
@@ -84,6 +133,11 @@ namespace Bangazon.Data {
                 new ProductType () {
                     ProductTypeId = 2,
                         Label = "Appliances"
+                },
+                new ProductType()
+                {
+                    ProductTypeId = 3,
+                    Label = "Electronics"
                 }
             );
 
@@ -105,7 +159,27 @@ namespace Bangazon.Data {
                         Title = "Wheelbarrow",
                         Quantity = 5,
                         Price = 29.99
-                }
+                },
+                 new Product()
+                 {
+                     ProductId = 3,
+                     ProductTypeId = 3,
+                     UserId = user.Id,
+                     Description = "Rectangle that stores music",
+                     Title = "iPod",
+                     Quantity = 10,
+                     Price = 49.99
+                 },
+                 new Product()
+                 {
+                     ProductId = 4,
+                     ProductTypeId = 1,
+                     UserId = user.Id,
+                     Description = "Everyone needs a football. Yay sports!",
+                     Title = "Football",
+                     Quantity = 100,
+                     Price = 8.99
+                 }
             );
 
             modelBuilder.Entity<Order> ().HasData (
@@ -115,6 +189,15 @@ namespace Bangazon.Data {
                     PaymentTypeId = null
                 }
             );
+
+            modelBuilder.Entity<Order>().HasData(
+              new Order()
+              {
+                  OrderId = 2,
+                  UserId = user.Id,
+                  PaymentTypeId = null
+              }
+          );
 
             modelBuilder.Entity<OrderProduct> ().HasData (
                 new OrderProduct () {
@@ -132,6 +215,16 @@ namespace Bangazon.Data {
                 }
             );
 
+            modelBuilder.Entity<OrderProduct>().HasData(
+              new OrderProduct()
+              {
+                  OrderProductId = 3,
+                  OrderId = 2,
+                  ProductId = 3
+              }
+          );
+
         }
     }
 }
+
