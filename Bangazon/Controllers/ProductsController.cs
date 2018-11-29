@@ -13,11 +13,14 @@ namespace Bangazon.Controllers
 {
     public class ProductsController : Controller
     {
+       // Create variable to represent database
         private readonly ApplicationDbContext _context;
 
-        // Create variable for UserManager tool using ApplicationUser
+        // David Taylor
+        // Create variable to represent User Data
         private readonly UserManager<ApplicationUser> _userManager;
 
+        // David Taylor
         // Create component to get current user from the _userManager variable
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
@@ -90,8 +93,13 @@ namespace Bangazon.Controllers
                 // Redirect to details view with id of product made using new object
                 return RedirectToAction(nameof(Details), new { id = product.ProductId.ToString() });
             }
+            // Get data from ProductTypeId to be displayed in dropdown
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+
+            //Get data from UserId to be displayed in dropdown
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", product.UserId);
+
+            // Return product view
             return View(product);
 
         }
