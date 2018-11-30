@@ -1,20 +1,43 @@
 ﻿﻿
+
+
+@using Microsoft.AspNetCore.Identity
+
+
+
 @model Bangazon.Models.ProductViewModels.ProductTypesViewModel
+
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+
+@inject UserManager<ApplicationUser> UserManager
+
+
+
 
 @{
     ViewData["Title"] = "Index";
+
+
+
 }
 
 <h2>Index</h2>
 
+@if (SignInManager.IsSignedIn(User))
+                    {
 <p>
     <a asp-action="Create">Create New</a>
-</p>
-<div>
-    
-       
-    <h3>@Html.DisplayNameFor(model => model.ProductType.Label)</h3>
-            
+    </p>
+    }
+    <div>
+
+
+        <h3>@Html.DisplayNameFor(model => model.ProductType.Label)</h3>
+
     <ul>
         @foreach (var item in Model.GroupedProducts)
         {
@@ -28,5 +51,5 @@
                 </ul>
         }
         </ul>
-            
+
 </div>
