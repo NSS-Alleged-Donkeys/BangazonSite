@@ -79,6 +79,26 @@ namespace Bangazon.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
+            var productTypesComplete = _context.ProductType;
+            List<SelectListItem> productTypes = new List<SelectListItem>();
+
+            foreach (var pt in productTypesComplete)
+            {
+                SelectListItem li = new SelectListItem
+                {
+                    Value = pt.ProductTypeId.ToString(),
+                    Text = pt.Label
+                };
+
+                productTypes.Add(li);
+            }
+
+            productTypes.Insert(0, new SelectListItem
+            {
+                Text = "Assign a Product Category...",
+                Value = "0"
+            });
+
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label");
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return View();
