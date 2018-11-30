@@ -10,11 +10,11 @@
 </div>
 <div>
     <h4>Latest Products: </h4>
+    <ol>
         @foreach (var prod in Model.AllProducts)
         {
-    <div>
-        <a asp-controller="Product" asp-action="Detail" asp-route-id="@prod.ProductId">@prod.Title</a> - @prod.Description
-    </div>
+        <li><a asp-controller="Product" asp-action="Detail" asp-route-id="@prod.ProductId">@prod.Title</a> - @prod.Description</li>
         }
+    </ol>
     
 </div>
