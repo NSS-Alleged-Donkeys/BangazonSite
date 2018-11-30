@@ -60,7 +60,9 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
-            return View(product);
+            ProductDetailViewModel model = new ProductDetailViewModel();
+            model.Product = product;
+            return View(model);
         }
 
         // GET: Products/Create
