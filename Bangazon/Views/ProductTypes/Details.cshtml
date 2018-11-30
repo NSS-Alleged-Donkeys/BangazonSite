@@ -10,12 +10,16 @@
     <h4>ProductType</h4>
     <hr />
     <dl class="dl-horizontal">
+        @foreach (Product i in Model.Products)
+        {
         <dt>
             @Html.DisplayNameFor(model => model.Label)
+            @i.Title
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Label)
         </dd>
+        }
     </dl>
 </div>
 <div>
