@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,10 @@ namespace Bangazon.Models.ProductViewModels
 {
     public class ProductCreateViewModel
     {
-        public List<SelectListItem> productTypes = new List<SelectListItem>();
+
+        public Product product { get; set; }
+
+        [Required]
+        public List<SelectListItem> productTypes { get; set; }
     }
 }

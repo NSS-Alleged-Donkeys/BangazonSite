@@ -73,6 +73,9 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
+            ProductCreateViewModel viewModel = new ProductCreateViewModel();
+            viewModel.product = product;
+
             return View(product);
         }
 
@@ -99,9 +102,12 @@ namespace Bangazon.Controllers
                 Value = "0"
             });
 
+            ProductCreateViewModel viewModel = new ProductCreateViewModel();
+            viewModel.productTypes = productTypes;
+
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label");
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            return View();
+            return View(viewModel);
         }
 
         // POST: Products/Create
@@ -109,7 +115,7 @@ namespace Bangazon.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductCreateViewModel productType)
         {
 
             // Remove user from model state
@@ -119,25 +125,25 @@ namespace Bangazon.Controllers
             if (ModelState.IsValid)
             {
                 // Add the user back
-                product.User = await GetCurrentUserAsync();
+                productType.product.User = await GetCurrentUserAsync();
 
                 // Add the product
-                _context.Add(product);
+                _context.Add(productType.product);
 
                 // Save changes to database
                 await _context.SaveChangesAsync();
 
                 // Redirect to details view with id of product made using new object
-                return RedirectToAction(nameof(Details), new { id = product.ProductId.ToString() });
+                return RedirectToAction(nameof(Details), new { id = productType.product.ProductId.ToString() });
             }
             // Get data from ProductTypeId to be displayed in dropdown
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", productType.product.ProductTypeId);
 
             //Get data from UserId to be displayed in dropdown
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", product.UserId);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", productType.product.UserId);
 
             // Return product view
-            return View(product);
+            return View(productType);
         }
 
         // GET: Products/Edit/5
