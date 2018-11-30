@@ -8,15 +8,28 @@ using Microsoft.EntityFrameworkCore;
 using Bangazon.Data;
 using Bangazon.Models;
 using Bangazon.Models.ProductViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bangazon.Controllers
 {
     public class ProductsController : Controller
     {
+        // Create variable to represent database
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
+        // David Taylor
+        // Create variable to represent User Data
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        // David Taylor
+        // Create component to get current user from the _userManager variable
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        // Pass in arguments from private varaibles to be used publicly
+        public ProductsController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -78,16 +91,34 @@ namespace Bangazon.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,DateCreated,Description,Title,Price,Quantity,UserId,City,ImagePath,ProductTypeId")] Product product)
+        public async Task<IActionResult> Create(Product product)
         {
+
+            // Remove user from model state
+            ModelState.Remove("User");
+
+            // If model state is valid
             if (ModelState.IsValid)
             {
+                // Add the user back
+                product.User = await GetCurrentUserAsync();
+
+                // Add the product
                 _context.Add(product);
+
+                // Save changes to database
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // Redirect to details view with id of product made using new object
+                return RedirectToAction(nameof(Details), new { id = product.ProductId.ToString() });
             }
+            // Get data from ProductTypeId to be displayed in dropdown
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+
+            //Get data from UserId to be displayed in dropdown
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", product.UserId);
+
+            // Return product view
             return View(product);
         }
 

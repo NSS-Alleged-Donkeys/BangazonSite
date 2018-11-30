@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Bangazon.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -31,8 +37,13 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Products" asp-action="Index">Product Categories</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Sell Something</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">View Cart</a></li>
+                    @*David Taylor
+                    If user is signed in, show Sell Something link*@
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell Something</a></li>
+                    }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
