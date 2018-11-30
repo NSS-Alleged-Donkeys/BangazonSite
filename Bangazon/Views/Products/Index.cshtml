@@ -23,7 +23,7 @@
                 <ul>
                     @foreach (var prod in item.Products)
                     {
-                        <li>@prod.Title</li>
+                        <li><a asp-area="" asp-controller="Products" asp-action="Detail">@prod.Title</a></li>
                     }
                 </ul>
         }
