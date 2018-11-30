@@ -5,14 +5,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bangazon.Models;
+using Bangazon.Data;
+using Microsoft.AspNetCore.Identity;
+using Bangazon.Models.HomeIndexViewModel;
 
 namespace Bangazon.Controllers
 {
     public class HomeController : Controller
     {
+
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+
         public IActionResult Index()
         {
-            return View();
+            List<Product> products = _context.Product
+                                    .OrderBy(p => p.DateCreated)
+                                    .Take(20)
+                                    .ToList();
+
+            IndexViewModel viewModel = new IndexViewModel();
+
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
         }
 
         public IActionResult About()
