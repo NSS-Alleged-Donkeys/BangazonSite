@@ -46,7 +46,7 @@
                 <ul>
                     @foreach (var prod in item.Products)
                     {
-                        <li><a asp-route-id="@prod.ProductId" asp-action="Detail">@prod.Title</a></li>
+                        <li><a asp-constroller="Products" asp-route-id="@prod.ProductId" asp-action="Details">@prod.Title</a></li>
                     }
                 </ul>
         }
