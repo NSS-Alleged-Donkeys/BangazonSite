@@ -1,0 +1,27 @@
+﻿@model Bangazon.Models.Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.OrderProducts)
+        {
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderProducts)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PaymentType.AccountNumber)
+        </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.OrderId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
