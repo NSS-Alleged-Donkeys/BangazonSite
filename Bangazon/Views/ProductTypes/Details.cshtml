@@ -18,9 +18,9 @@
         </dt>
         <dd>
             @*@Html.DisplayFor(model => model.Label)*@
-           <p> </p>
-            <p>Title: @i.Title</p>
-            <p>Quantity: @i.Quantity </p>
+            <p> </p>
+            <a asp-controller="Products" asp-route-id="@i.ProductId" asp-action="Details">@i.Title</a>
+            <p>Quantity: @i.Quantity</p>
             <p>Price: @i.Price</p>
         </dd>
         }
