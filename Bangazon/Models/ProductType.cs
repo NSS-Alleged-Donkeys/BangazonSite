@@ -11,7 +11,7 @@ namespace Bangazon.Models
 
         [Required]
         [StringLength(255)]
-        [Display(Name="Category")]
+        [Display(Name="Category:")]
         public string Label { get; set; }
 
         [NotMapped]

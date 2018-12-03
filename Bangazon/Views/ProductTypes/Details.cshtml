@@ -7,15 +7,23 @@
 <h2>Details</h2>
 
 <div>
-    <h4>ProductType</h4>
+    <h4>Category:  @Html.DisplayFor(model => model.Label)</h4>
     <hr />
     <dl class="dl-horizontal">
+        @foreach (Product i in Model.Products)
+        {
         <dt>
-            @Html.DisplayNameFor(model => model.Label)
+           @* @Html.DisplayNameFor(model => model.Label)*@
+          
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Label)
+            @*@Html.DisplayFor(model => model.Label)*@
+           <p> </p>
+            <p>Title: @i.Title</p>
+            <p>Quantity: @i.Quantity </p>
+            <p>Price: @i.Price</p>
         </dd>
+        }
     </dl>
 </div>
 <div>
