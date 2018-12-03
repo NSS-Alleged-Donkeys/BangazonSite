@@ -47,6 +47,35 @@ namespace Bangazon.Controllers
             return View(viewModel);
         }
 
+        //GET: Products/?search="iPod"
+        public IActionResult Search(string searchBy, string search)
+        {
+            List<Product> products = new List<Product>();
+
+
+            if (searchBy == "Name")
+            {
+                products = _context.Product
+                    .Where(p => p.Title.Contains(search))
+                                        .OrderBy(p => p.Title)
+                                        .ToList();
+            }
+
+            if (searchBy == "Category")
+            {
+                products = _context.Product
+                    .Where(p => p.ProductType.Label == search)
+                                        .OrderBy(p => p.Title)
+                                        .ToList();
+            }
+
+            AllProductsViewModel viewModel = new AllProductsViewModel();
+
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
+        }
+
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
