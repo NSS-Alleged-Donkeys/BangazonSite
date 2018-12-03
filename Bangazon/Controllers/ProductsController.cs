@@ -34,13 +34,17 @@ namespace Bangazon.Controllers
         }
 
         //GET: Products
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            AllProductsViewModel ViewModel = new AllProductsViewModel();
+            List<Product> products = _context.Product
+                                    .OrderBy(p => p.Title)
+                                    .ToList();
 
-            ViewModel.AllProducts = await _context.Product.ToList();
+            AllProductsViewModel viewModel = new AllProductsViewModel();
 
-            return View(ViewModel);
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
         }
 
         // GET: Products/Details/5

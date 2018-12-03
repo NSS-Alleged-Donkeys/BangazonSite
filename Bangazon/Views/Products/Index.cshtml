@@ -1,5 +1,4 @@
-﻿@page
-@model Bangazon.Models.ProductViewModels.AllProductsViewModel
+﻿@model Bangazon.Models.ProductViewModels.AllProductsViewModel
 
 <h2>All Products</h2>
 
@@ -34,9 +33,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
-            <td>
-                <a asp-page="./Details" asp-route-id="@item.ProductId">Details</a>
-            </td>
+            <th>
+                @Html.DisplayFor(model => item.Quantity)
+            </th>
         </tr>
 }
     </tbody>
