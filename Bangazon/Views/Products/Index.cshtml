@@ -1,55 +1,42 @@
-﻿﻿
+﻿@model Bangazon.Models.ProductViewModels.AllProductsViewModel
+
+<h2>All Products</h2>
 
 
-@using Microsoft.AspNetCore.Identity
-
-
-
-@model Bangazon.Models.ProductViewModels.ProductTypesViewModel
-
-
-
-@inject SignInManager<ApplicationUser> SignInManager
-
-
-
-@inject UserManager<ApplicationUser> UserManager
-
-
-
-
-@{
-    ViewData["Title"] = "Index";
-
-
-
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.AllProducts) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <th>
+                @Html.DisplayFor(model => item.Quantity)
+            </th>
+        </tr>
 }
-
-<h2>Index</h2>
-
-@if (SignInManager.IsSignedIn(User))
-                    {
-<p>
-    <a asp-action="Create">Create New</a>
-  </p>
-    }
-    <div>
-
-
-        <h3>@Html.DisplayNameFor(model => model.ProductType.Label)</h3>
-
-    <ul>
-        @foreach (var item in Model.GroupedProducts)
-        {
-
-<a asp-controller="ProductTypes" asp-action="details" asp-route-id="@item.TypeId"><li>@item.TypeName (Total Products: @item.ProductCount)</li></a>
-                <ul>
-                    @foreach (var prod in item.Products)
-                    {
-                        <li><a asp-constroller="Products" asp-route-id="@prod.ProductId" asp-action="Details">@prod.Title</a></li>
-                    }
-                </ul>
-        }
-        </ul>
-
-</div>
+    </tbody>
+</table>

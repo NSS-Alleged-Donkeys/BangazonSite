@@ -34,26 +34,35 @@ namespace Bangazon.Controllers
         }
 
         //GET: Products
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var model = new ProductTypesViewModel();
+            List<Product> products = _context.Product
+                                    .OrderBy(p => p.Title)
+                                    .ToList();
 
-            // Build list of Product instances for display in view
-            // LINQ is awesome
-            model.GroupedProducts = await (
-                from t in _context.ProductType
-                join p in _context.Product
-                on t.ProductTypeId equals p.ProductTypeId
-                group new { t, p } by new { t.ProductTypeId, t.Label } into grouped
-                select new GroupedProducts
-                {
-                    TypeId = grouped.Key.ProductTypeId,
-                    TypeName = grouped.Key.Label,
-                    ProductCount = grouped.Select(x => x.p.ProductId).Count(),
-                    Products = grouped.Select(x => x.p).Take(3)
-                }).ToListAsync();
+            AllProductsViewModel viewModel = new AllProductsViewModel();
 
-            return View(model);
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
+        }
+
+        //GET: Products/?search="iPod"
+        public IActionResult Search(string search)
+        {
+            //Gets all products from database, returns only those that contain the search query, and sort in alphabetical order  
+            List<Product> products = _context.Product
+                                    .Where(p => p.Title.Contains(search))
+                                    .OrderBy(p => p.Title)
+                                    .ToList();
+
+            //Creates new view model
+            AllProductsViewModel viewModel = new AllProductsViewModel();
+
+            //Attaches the searched products to the view model
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
         }
 
         // GET: Products/Details/5
