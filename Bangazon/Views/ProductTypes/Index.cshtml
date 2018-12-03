@@ -23,13 +23,16 @@
         @foreach (var item in Model.GroupedProducts)
         {
 
-            <li>@item.TypeName (Total Products: @item.ProductCount)</li>
-                <ul>
-                    @foreach (var prod in item.Products)
-                    {
+        <a asp-controller="ProductTypes" asp-action="Details" asp-route-id="@item.TypeId">
+            <li>@item.TypeName (Total Products: @item.ProductCount)</li></a>
+            <ul>
+                @foreach (var prod in item.Products)
+                {
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@prod.ProductId">
                         <li>@prod.Title</li>
-                    }
-                </ul>
-        }
-    </ul>
+                    </a>
+                }
+            </ul>
+            }
+</ul>
 </div>
