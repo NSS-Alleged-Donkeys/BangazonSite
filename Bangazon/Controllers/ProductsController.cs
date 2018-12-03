@@ -73,7 +73,7 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
-            ProductCreateViewModel viewModel = new ProductCreateViewModel();
+            ProductDetailViewModel viewModel = new ProductDetailViewModel();
             viewModel.product = product;
 
             return View(viewModel);
@@ -87,7 +87,7 @@ namespace Bangazon.Controllers
 
             productTypes.Insert(0, new SelectListItem
             {
-                Text = "Assign a Product Category...",
+                Text = "Assign a Product Category",
                 Value = ""
             });
 
@@ -98,7 +98,6 @@ namespace Bangazon.Controllers
                     Value = pt.ProductTypeId.ToString(),
                     Text = pt.Label
                 };
-
                 productTypes.Add(li);
             }
 
@@ -115,37 +114,56 @@ namespace Bangazon.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductCreateViewModel productType)
+        public async Task<IActionResult> Create(ProductCreateViewModel productCreate)
         {
 
-            var productTypesComplete = _context.ProductType;
-
             // Remove user from model state
-            ModelState.Remove("User");
+            ModelState.Remove("product.User");
 
             // If model state is valid
             if (ModelState.IsValid)
             {
                 // Add the user back
-                productType.product.User = await GetCurrentUserAsync();
+                productCreate.product.User = await GetCurrentUserAsync();
 
                 // Add the product
-                _context.Add(productType.product);
+                _context.Add(productCreate.product);
 
                 // Save changes to database
                 await _context.SaveChangesAsync();
 
                 // Redirect to details view with id of product made using new object
-                return RedirectToAction(nameof(Details), new { id = productType.product.ProductId.ToString() });
+                return RedirectToAction(nameof(Details), new { id = productCreate.product.ProductId.ToString() });
             }
             // Get data from ProductTypeId to be displayed in dropdown
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", productType.product.ProductTypeId);
+            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", productCreate.product.ProductTypeId);
 
             //Get data from UserId to be displayed in dropdown
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", productType.product.UserId);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", productCreate.product.UserId);
+
+            var productTypesComplete = _context.ProductType;
+            List<SelectListItem> productTypes = new List<SelectListItem>();
+
+            productTypes.Insert(0, new SelectListItem
+            {
+                Text = "Assign a Product Category",
+                Value = ""
+            });
+
+            foreach (var pt in productTypesComplete)
+            {
+                SelectListItem li = new SelectListItem
+                {
+                    Value = pt.ProductTypeId.ToString(),
+                    Text = pt.Label
+                };
+                productTypes.Add(li);
+            }
+
+            productCreate.productTypes = productTypes;
 
             // Return product view
-            return View(productType);
+            return View(productCreate);
         }
 
         // GET: Products/Edit/5
