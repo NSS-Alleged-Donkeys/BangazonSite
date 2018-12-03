@@ -1,53 +1,43 @@
-﻿﻿
+﻿@page
+@model Bangazon.Models.ProductViewModels.AllProductsViewModel
+
+<h2>All Products</h2>
 
 
-@using Microsoft.AspNetCore.Identity
-
-
-
-@model Bangazon.Models.ProductViewModels.ProductTypesViewModel
-
-
-
-@inject SignInManager<ApplicationUser> SignInManager
-
-
-
-@inject UserManager<ApplicationUser> UserManager
-
-
-
-
-@{
-    ViewData["Title"] = "Index";
-
-
-
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.AllProducts) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.ProductId">Details</a>
+            </td>
+        </tr>
 }
-
-@if (SignInManager.IsSignedIn(User))
-                    {
-<p>
-    <a asp-action="Create">Create New</a>
-    </p>
-    }
-    <div>
-
-
-        <h3>@Html.DisplayNameFor(model => model.ProductType.Label)</h3>
-
-    <ul>
-        @foreach (var item in Model.GroupedProducts)
-        {
-
-            <li>@item.TypeName (Total Products: @item.ProductCount)</li>
-                <ul>
-                    @foreach (var prod in item.Products)
-                    {
-                        <li>@prod.Title</li>
-                    }
-                </ul>
-        }
-        </ul>
-
-</div>
+    </tbody>
+</table>
