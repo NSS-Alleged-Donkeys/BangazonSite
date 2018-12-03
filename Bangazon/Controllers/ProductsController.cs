@@ -76,7 +76,7 @@ namespace Bangazon.Controllers
             ProductCreateViewModel viewModel = new ProductCreateViewModel();
             viewModel.product = product;
 
-            return View(product);
+            return View(viewModel);
         }
 
         // GET: Products/Create
@@ -84,6 +84,12 @@ namespace Bangazon.Controllers
         {
             var productTypesComplete = _context.ProductType;
             List<SelectListItem> productTypes = new List<SelectListItem>();
+
+            productTypes.Insert(0, new SelectListItem
+            {
+                Text = "Assign a Product Category...",
+                Value = ""
+            });
 
             foreach (var pt in productTypesComplete)
             {
@@ -95,12 +101,6 @@ namespace Bangazon.Controllers
 
                 productTypes.Add(li);
             }
-
-            productTypes.Insert(0, new SelectListItem
-            {
-                Text = "Assign a Product Category...",
-                Value = "0"
-            });
 
             ProductCreateViewModel viewModel = new ProductCreateViewModel();
             viewModel.productTypes = productTypes;
@@ -117,6 +117,8 @@ namespace Bangazon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductCreateViewModel productType)
         {
+
+            var productTypesComplete = _context.ProductType;
 
             // Remove user from model state
             ModelState.Remove("User");

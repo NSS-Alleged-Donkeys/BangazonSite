@@ -12,7 +12,6 @@ namespace Bangazon.Models.ProductViewModels
 
         public Product product { get; set; }
 
-        [Required]
         public List<SelectListItem> productTypes { get; set; }
     }
 }
