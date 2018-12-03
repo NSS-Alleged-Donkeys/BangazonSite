@@ -4,41 +4,70 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>@Html.DisplayNameFor(model => model.Product.Title)</h2>
+<h2>@Html.DisplayNameFor(model => model.product.Title)</h2>
 
 <div>
     <h4>Product</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Product.Title)
+            @Html.DisplayNameFor(model => model.product.DateCreated)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Product.Title)
+            @Html.DisplayFor(model => model.product.DateCreated)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Product.Description)
+            @Html.DisplayNameFor(model => model.product.Description)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Product.Description)
+            @Html.DisplayFor(model => model.product.Description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Product.Price)
+            @Html.DisplayNameFor(model => model.product.Title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Product.Price)
+            @Html.DisplayFor(model => model.product.Title)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Product.Quantity)
+            @Html.DisplayNameFor(model => model.product.Price)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Product.Quantity)
+            @Html.DisplayFor(model => model.product.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.product.Quantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.product.Quantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.product.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.product.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.product.ImagePath)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.product.ImagePath)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.product.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.product.User.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.product.ProductType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.product.ProductType.Label)
         </dd>
 
     </dl>
 </div>
 <div>
-    <button asp-action="Create" class="btn-success">Add to Order</button>
-    <a asp-action="Edit" asp-route-id="@Model.Product.ProductId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.product.ProductId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
