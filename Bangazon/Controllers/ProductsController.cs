@@ -48,29 +48,18 @@ namespace Bangazon.Controllers
         }
 
         //GET: Products/?search="iPod"
-        public IActionResult Search(string searchBy, string search)
+        public IActionResult Search(string search)
         {
-            List<Product> products = new List<Product>();
+            //Gets all products from database, returns only those that contain the search query, and sort in alphabetical order  
+            List<Product> products = _context.Product
+                                    .Where(p => p.Title.Contains(search))
+                                    .OrderBy(p => p.Title)
+                                    .ToList();
 
-
-            if (searchBy == "Name")
-            {
-                products = _context.Product
-                    .Where(p => p.Title.Contains(search))
-                                        .OrderBy(p => p.Title)
-                                        .ToList();
-            }
-
-            if (searchBy == "Category")
-            {
-                products = _context.Product
-                    .Where(p => p.ProductType.Label == search)
-                                        .OrderBy(p => p.Title)
-                                        .ToList();
-            }
-
+            //Creates new view model
             AllProductsViewModel viewModel = new AllProductsViewModel();
 
+            //Attaches the searched products to the view model
             viewModel.AllProducts = products;
 
             return View(viewModel);

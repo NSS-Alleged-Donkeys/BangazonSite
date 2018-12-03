@@ -46,18 +46,15 @@
                     }
                 </ul>
                     <partial name="_LoginPartial" />
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    @using (@Html.BeginForm("Search", "Products", FormMethod.Get))
+                    @if (SignInManager.IsSignedIn(User))
                     {
+                        @using (@Html.BeginForm("Search", "Products", FormMethod.Get))
+                        {
                     <p class="text-info">
-                            Search By @Html.RadioButton("searchBy", "Name") Name
-                            @Html.RadioButton("searchBy", "Category") Category
-                            @Html.TextBox("search")<input type="submit" value="search" />
+                        @Html.TextBox("search")<input type="submit" value="search" placeholder="Search for a product"/>
                     </p>
-                    }
-               
-                }
+                        }
+                    }       
             </div>
         </div>
     </nav>
