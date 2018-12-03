@@ -31,7 +31,7 @@
                     {
 <p>
     <a asp-action="Create">Create New</a>
-    </p>
+  </p>
     }
     <div>
 
@@ -42,11 +42,11 @@
         @foreach (var item in Model.GroupedProducts)
         {
 
-            <li>@item.TypeName (Total Products: @item.ProductCount)</li>
+<a asp-controller="ProductTypes" asp-action="details" asp-route-id="@item.TypeId"><li>@item.TypeName (Total Products: @item.ProductCount)</li></a>
                 <ul>
                     @foreach (var prod in item.Products)
                     {
-                        <li>@prod.Title</li>
+                        <li><a asp-constroller="Products" asp-route-id="@prod.ProductId" asp-action="Details">@prod.Title</a></li>
                     }
                 </ul>
         }
