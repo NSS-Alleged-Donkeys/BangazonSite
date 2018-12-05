@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bangazon.Data;
 using Bangazon.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Bangazon.Models.OrderViewModels;
 
 namespace Bangazon.Controllers
 {
@@ -14,15 +17,23 @@ namespace Bangazon.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public OrdersController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _context = ctx;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Order.Include(o => o.PaymentType).Include(o => o.User);
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            var applicationDbContext = _context.Order.Include(o => o.PaymentType).Include(o => o.User).Where(o => o.UserId == user.Id);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,9 +45,11 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            Order order = await _context.Order
                 .Include(o => o.PaymentType)
                 .Include(o => o.User)
+                .Include(o => o.OrderProducts)
+                    .ThenInclude(o => o.Product)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
@@ -161,6 +174,57 @@ namespace Bangazon.Controllers
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.OrderId == id);
+        }
+
+        //POST: 
+        [Authorize]
+        public async Task<IActionResult> AddToCart(int id)
+        {
+            // Find the product requested
+            Product productToAdd = await _context.Product.SingleOrDefaultAsync(p => p.ProductId == id);
+
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            // See if the user has an open order
+            var openOrder = await _context.Order.SingleOrDefaultAsync(o => o.User == user && o.PaymentTypeId == null);
+
+            //Initiate the current order
+            Order currentOrder;
+
+
+            // If no order, create one, else add to existing order
+            if (openOrder == null)
+            {
+                currentOrder = new Order();
+                currentOrder.UserId = user.Id;
+                currentOrder.PaymentTypeId = null;
+                _context.Add(currentOrder);
+                await _context.SaveChangesAsync();
+            }
+
+            else
+            {
+                currentOrder = openOrder;
+            }
+
+            //Create a new instance of the current product
+            OrderProduct currentProduct = new OrderProduct();
+
+            //Set the ProductId to equal the the id from the URL
+            currentProduct.ProductId = id;
+
+            //Set the OrderId to equal the Id of the current order
+            currentProduct.OrderId = currentOrder.OrderId;
+
+            //Adds current product to the database 
+            _context.Add(currentProduct);
+
+            //Saves database changes
+            await _context.SaveChangesAsync();
+
+            //Redirects to the index page for your orders
+            return RedirectToAction("Index", "Orders");
         }
     }
 }
