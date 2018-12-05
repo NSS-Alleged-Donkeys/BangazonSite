@@ -13,9 +13,9 @@
         @foreach (var item in Model.LineItems)
         {
             
-        <dt>
+        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">
             @item.Product.Title
-        </dt>
+        </a>
         <dd>
             @item.Units
         </dd>

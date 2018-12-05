@@ -243,7 +243,7 @@ namespace Bangazon.Controllers
             await _context.SaveChangesAsync();
 
             //Redirects to the index page for your orders
-            return RedirectToAction("Index", "Orders");
+            return RedirectToAction("Details", "Orders");
         }
     }
 }
