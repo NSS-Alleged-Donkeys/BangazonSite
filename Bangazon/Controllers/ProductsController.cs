@@ -34,26 +34,35 @@ namespace Bangazon.Controllers
         }
 
         //GET: Products
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var model = new ProductTypesViewModel();
+            List<Product> products = _context.Product
+                                    .OrderBy(p => p.Title)
+                                    .ToList();
 
-            // Build list of Product instances for display in view
-            // LINQ is awesome
-            model.GroupedProducts = await (
-                from t in _context.ProductType
-                join p in _context.Product
-                on t.ProductTypeId equals p.ProductTypeId
-                group new { t, p } by new { t.ProductTypeId, t.Label } into grouped
-                select new GroupedProducts
-                {
-                    TypeId = grouped.Key.ProductTypeId,
-                    TypeName = grouped.Key.Label,
-                    ProductCount = grouped.Select(x => x.p.ProductId).Count(),
-                    Products = grouped.Select(x => x.p).Take(3)
-                }).ToListAsync();
+            AllProductsViewModel viewModel = new AllProductsViewModel();
 
-            return View(model);
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
+        }
+
+        //GET: Products/?search="iPod"
+        public IActionResult Search(string search)
+        {
+            //Gets all products from database, returns only those that contain the search query, and sort in alphabetical order  
+            List<Product> products = _context.Product
+                                    .Where(p => p.Title.Contains(search))
+                                    .OrderBy(p => p.Title)
+                                    .ToList();
+
+            //Creates new view model
+            AllProductsViewModel viewModel = new AllProductsViewModel();
+
+            //Attaches the searched products to the view model
+            viewModel.AllProducts = products;
+
+            return View(viewModel);
         }
 
         // GET: Products/Details/5
@@ -73,17 +82,55 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
-            ProductDetailViewModel model = new ProductDetailViewModel();
-            model.Product = product;
-            return View(model);
+            ProductDetailViewModel viewModel = new ProductDetailViewModel();
+            viewModel.product = product;
+
+            return View(viewModel);
         }
 
         // GET: Products/Create
         public IActionResult Create()
         {
+            // Grab product type from database
+            var productTypesComplete = _context.ProductType;
+
+            // Create new select list item of productTypes
+            List<SelectListItem> productTypes = new List<SelectListItem>();
+
+            // Insert new position into productTypes list
+            productTypes.Insert(0, new SelectListItem
+            {
+                Text = "Assign a Product Category",
+                Value = ""
+            });
+
+            // Loop over product types in database
+            foreach (var pt in productTypesComplete)
+            {
+                // Create a new select list item of li
+                SelectListItem li = new SelectListItem
+                {
+                    // Give a value to li
+                    Value = pt.ProductTypeId.ToString(),
+                    // Provide text to li
+                    Text = pt.Label
+                };
+                // Add li to productTypes select list item
+                productTypes.Add(li);
+            }
+
+            // Create instance of viewModel for Product Create
+            ProductCreateViewModel viewModel = new ProductCreateViewModel();
+            
+            // Assign productTypes select list item to the product Types in ProductCreateViewModel
+            viewModel.productTypes = productTypes;
+
+            // View Data for dropdowns
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label");
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            return View();
+
+            // Return view of ProductCreateViewModel
+            return View(viewModel);
         }
 
         // POST: Products/Create
@@ -91,35 +138,66 @@ namespace Bangazon.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductCreateViewModel productCreate)
         {
 
             // Remove user from model state
-            ModelState.Remove("User");
+            ModelState.Remove("product.User");
 
             // If model state is valid
             if (ModelState.IsValid)
             {
                 // Add the user back
-                product.User = await GetCurrentUserAsync();
+                productCreate.product.User = await GetCurrentUserAsync();
 
                 // Add the product
-                _context.Add(product);
+                _context.Add(productCreate.product);
 
                 // Save changes to database
                 await _context.SaveChangesAsync();
 
                 // Redirect to details view with id of product made using new object
-                return RedirectToAction(nameof(Details), new { id = product.ProductId.ToString() });
+                return RedirectToAction(nameof(Details), new { id = productCreate.product.ProductId.ToString() });
             }
             // Get data from ProductTypeId to be displayed in dropdown
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", product.ProductTypeId);
+            ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "ProductTypeId", "Label", productCreate.product.ProductTypeId);
 
             //Get data from UserId to be displayed in dropdown
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", product.UserId);
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", productCreate.product.UserId);
+
+            // Grab product type from database
+            var productTypesComplete = _context.ProductType;
+
+            // Create new select list item of productTypes
+            List<SelectListItem> productTypes = new List<SelectListItem>();
+
+            // Insert new position into productTypes list
+            productTypes.Insert(0, new SelectListItem
+            {
+                Text = "Assign a Product Category",
+                Value = ""
+            });
+
+            // Loop over product types in database
+            foreach (var pt in productTypesComplete)
+            {
+                // Create a new select list item of li
+                SelectListItem li = new SelectListItem
+                {
+                    // Give a value to li
+                    Value = pt.ProductTypeId.ToString(),
+                    // Provide text to li
+                    Text = pt.Label
+                };
+                // Add li to productTypes select list item
+                productTypes.Add(li);
+            }
+
+            // Make productTypes in ProductCreateViewModel equal to productTypes
+            productCreate.productTypes = productTypes;
 
             // Return product view
-            return View(product);
+            return View(productCreate);
         }
 
         // GET: Products/Edit/5
