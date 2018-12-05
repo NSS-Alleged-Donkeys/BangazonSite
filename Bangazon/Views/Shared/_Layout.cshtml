@@ -37,7 +37,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="ProductTypes" asp-action="Index">Product Categories</a></li>
-                    <li><a asp-area="" asp-controller="Orders" asp-action="Index">View Cart</a></li>
+                    <li><a asp-area="" asp-controller="Orders" asp-action="Details">View Cart</a></li>
                     @*David Taylor
         If user is signed in, show Sell Something link*@
                     @if (SignInManager.IsSignedIn(User))
