@@ -195,6 +195,7 @@ namespace Bangazon.Controllers
             return _context.Order.Any(e => e.OrderId == id);
         }
 
+        /*
         // GET: Orders/DeleteItem/5
         public async Task<IActionResult> DeleteItemFromCart(int? id)
         {
@@ -214,19 +215,35 @@ namespace Bangazon.Controllers
 
             return View(order);
         }
-
+        */
         // POST: Orders/DeleteItem/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteItemFromCartConfirmed(OrderProduct id)
+        public async Task<IActionResult> DeleteItemFromCart(int prodId)
         {
-            var OrderProductItem = await _context.Order.FindAsync(id);
-            _context.Order.Remove(OrderProductItem);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            var currentUser = await GetCurrentUserAsync();
+            Order order = await _context.Order
+               .Include(o => o.PaymentType)
+               .Include(o => o.User)
+               .Include(o => o.OrderProducts)
+               .ThenInclude(op => op.Product)
+               .FirstOrDefaultAsync(m => m.UserId == currentUser.Id.ToString() && m.PaymentTypeId == null);
+
+            OrderProduct orderProduct =  await _context.OrderProduct
+               
+            .FirstOrDefaultAsync(op => op.OrderId == order.OrderId && op.ProductId == prodId);
+
+
+            _context.OrderProduct.Remove(orderProduct);
+             await _context.SaveChangesAsync(); 
+            return RedirectToAction(nameof(Details));
+             
+
+
         }
 
-       
+
 
         //POST: 
         [Authorize]
