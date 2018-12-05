@@ -1,0 +1,43 @@
+﻿@model Bangazon.Models.ProductViewModels.AllProductsViewModel
+
+<h2>Searched Results</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.AllProducts)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@Html.DisplayFor(modelItem => item.Title)</a>
+</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <th>
+                    @Html.DisplayFor(model => item.Quantity)
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>
