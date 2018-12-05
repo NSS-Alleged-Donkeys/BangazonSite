@@ -7,15 +7,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bangazon.Data;
 using Bangazon.Models;
+using Microsoft.AspNetCore.Identity;
+using Bangazon.Models.OrderViewModels;
 
 namespace Bangazon.Controllers
 {
     public class OrdersController : Controller
     {
+        // Create variable to represent database
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        // David Taylor
+        // Create variable to represent User Data
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        // David Taylor
+        // Create component to get current user from the _userManager variable
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        // Pass in arguments from private varaibles to be used publicly
+        public OrdersController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -27,23 +41,37 @@ namespace Bangazon.Controllers
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            OrderDetailViewModel model = new OrderDetailViewModel();
+            var currentUser = await GetCurrentUserAsync();
 
             var order = await _context.Order
                 .Include(o => o.PaymentType)
                 .Include(o => o.User)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .FirstOrDefaultAsync(m => m.UserId == currentUser.Id.ToString() && m.PaymentTypeId == null);
+
+            model.Order = order;
+
+            model.LineItems = order
+                .OrderProducts
+                .GroupBy(op => op.Product)
+                .Select(g => new OrderLineItem
+                {
+                    Product = g.Key,
+                    Units = g.Select(l => l.ProductId).Count(),
+                    Cost = g.Key.Price * g.Select(l => l.ProductId).Count()
+                }).ToList()
+                ;
+
+
             if (order == null)
             {
-                return NotFound();
+                return View("EmptyCart");
             }
-
-            return View(order);
+            return View(model);
         }
 
         // GET: Orders/Create

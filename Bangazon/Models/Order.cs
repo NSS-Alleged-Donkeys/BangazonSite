@@ -29,5 +29,6 @@ namespace Bangazon.Models
     public PaymentType PaymentType {get;set;}
 
     public virtual ICollection<OrderProduct> OrderProducts { get; set; }
-  }
+
+    }
 }

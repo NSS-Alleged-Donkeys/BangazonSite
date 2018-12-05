@@ -1,4 +1,4 @@
-﻿@model Bangazon.Models.Order
+﻿@model Bangazon.Models.OrderViewModels.OrderDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -10,18 +10,22 @@
     <h4>Order</h4>
     <hr />
     <dl class="dl-horizontal">
-        @foreach (var item in Model.OrderProducts)
+        @foreach (var item in Model.LineItems)
         {
+            
         <dt>
-            @Html.DisplayNameFor(model => model.OrderProducts)
+            @item.Product.Title
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.PaymentType.AccountNumber)
+            @item.Units
+        </dd>
+        <dd>
+            @item.Cost
         </dd>
         }
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.OrderId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Order.OrderId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

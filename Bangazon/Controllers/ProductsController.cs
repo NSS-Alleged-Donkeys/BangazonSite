@@ -93,7 +93,7 @@ namespace Bangazon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
-
+            // If the user is already in the ModelState
             // Remove user from model state
             ModelState.Remove("User");
 
