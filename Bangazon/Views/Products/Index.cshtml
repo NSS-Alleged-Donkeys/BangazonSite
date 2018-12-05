@@ -1,4 +1,10 @@
-﻿@model Bangazon.Models.ProductViewModels.AllProductsViewModel
+﻿@model Bangazon.Models.ProductViewModels.ProductTypesViewModel
+
+@using Microsoft.AspNetCore.Identity
+@using Bangazon.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <h2>All Products</h2>
 
@@ -22,21 +28,54 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.AllProducts) {
+        <!--@foreach (var item in Model.GroupedProducts)
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                Html.DisplayFor(modelItem => item.Price)
             </td>
             <th>
-                @Html.DisplayFor(model => item.Quantity)
+                Html.DisplayFor(model => item.Quantity)
             </th>
         </tr>
-}
-    </tbody>
-</table>
+    }-->
+
+
+    <h2>Index</h2>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
+    <div>
+
+
+        <h3>@Html.DisplayNameFor(model => model.ProductType.Label)</h3>
+
+        <ul>
+            @foreach (var item in Model.GroupedProducts)
+            {
+
+                <a asp-controller="ProductTypes" asp-action="details" asp-route-id="@item.TypeId"><li>@item.TypeName (Total Products: @item.ProductCount)</li></a>
+                <ul>
+                    @foreach (var prod in item.Products)
+                    {
+                        <li><a asp-controller="Products" asp-route-id="@prod.ProductId" asp-action="Details">@prod.Title</a></li>
+                    }
+                </ul>
+            }
+        </ul>
+
+<<<<<<< HEAD
+    </div>
+=======
+</div>
+>>>>>>> 649c29d4f766b59b1a14265f6d8d9f26b51970b7

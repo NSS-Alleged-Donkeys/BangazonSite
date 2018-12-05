@@ -43,6 +43,7 @@
                 @Html.DisplayFor(modelItem => item.PaymentType.AccountNumber)
             </td>
             <td>
+                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
                 <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
                 <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
             </td>
