@@ -6,6 +6,6 @@ namespace Bangazon.Models.OrderViewModels
     {
         public Order Order { get; set; }
 
-        public IEnumerable<OrderLineItem> LineItems { get; set; }
+        public List<OrderLineItem> LineItems { get; set; }
     }
 }

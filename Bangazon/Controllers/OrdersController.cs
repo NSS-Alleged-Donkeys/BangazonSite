@@ -15,17 +15,24 @@ namespace Bangazon.Controllers
 {
     public class OrdersController : Controller
     {
+        // Create variable to represent database
         private readonly ApplicationDbContext _context;
 
+        // David Taylor
+        // Create variable to represent User Data
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
+        // David Taylor
+        // Create component to get current user from the _userManager variable
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        // Pass in arguments from private varaibles to be used publicly
+        public OrdersController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
-            _context = ctx;
+            _context = context;
         }
-
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Orders
         public async Task<IActionResult> Index()
@@ -38,25 +45,37 @@ namespace Bangazon.Controllers
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            OrderDetailViewModel model = new OrderDetailViewModel();
+            var currentUser = await GetCurrentUserAsync();
 
             Order order = await _context.Order
                 .Include(o => o.PaymentType)
                 .Include(o => o.User)
                 .Include(o => o.OrderProducts)
-                    .ThenInclude(o => o.Product)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
+                .ThenInclude(op => op.Product)
+                .FirstOrDefaultAsync(m => m.UserId == currentUser.Id.ToString() && m.PaymentTypeId == null);
+
+            model.Order = order;
+
+            model.LineItems = order
+                .OrderProducts
+                .GroupBy(op => op.Product)
+                .Select(g => new OrderLineItem
+                {
+                    Product = g.Key,
+                    Units = g.Select(l => l.ProductId).Count(),
+                    Cost = g.Key.Price * g.Select(l => l.ProductId).Count()
+                }).ToList()
+                ;
+
+
             if (order == null)
             {
-                return NotFound();
+                return View("EmptyCart");
             }
-
-            return View(order);
+            return View(model);
         }
 
         // GET: Orders/Create
@@ -257,7 +276,7 @@ namespace Bangazon.Controllers
             await _context.SaveChangesAsync();
 
             //Redirects to the index page for your orders
-            return RedirectToAction("Index", "Orders");
+            return RedirectToAction("Details", "Orders");
         }
     }
 }
