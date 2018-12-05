@@ -13,15 +13,13 @@
         @foreach (var item in Model.OrderProducts)
         {
         <dt>
-            @Html.DisplayNameFor(model => model.OrderProducts)
+            <a asp-action="Details" asp-controller="Products" asp-route-id="@item.Product.ProductId">@item.Product.Title</a>
         </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PaymentType.AccountNumber)
-        </dd>
         }
     </dl>
 </div>
 <div>
+    <a asp-action="Details" asp-route-id="@Model.OrderId">Details</a> |
     <a asp-action="Edit" asp-route-id="@Model.OrderId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
