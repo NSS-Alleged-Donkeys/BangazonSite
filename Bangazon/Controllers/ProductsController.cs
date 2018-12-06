@@ -82,12 +82,14 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
+            // Create instance of view model to hold previously defined variable
             ProductDetailViewModel viewModel = new ProductDetailViewModel();
             viewModel.product = product;
 
             return View(viewModel);
         }
 
+        // David Taylor
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -133,6 +135,7 @@ namespace Bangazon.Controllers
             return View(viewModel);
         }
 
+        // David Taylor
         // POST: Products/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.

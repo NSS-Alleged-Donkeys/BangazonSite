@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Bangazon.Models
 
+@*  David Taylor
+    Inject methods from Identity framework to check if user is signed in and manage their data*@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -39,7 +41,7 @@
                     <li><a asp-area="" asp-controller="ProductTypes" asp-action="Index">Product Categories</a></li>
                     <li><a asp-area="" asp-controller="Orders" asp-action="Details">View Cart</a></li>
                     @*David Taylor
-        If user is signed in, show Sell Something link*@
+                    If user is signed in, show Sell Something link*@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell Something</a></li>
