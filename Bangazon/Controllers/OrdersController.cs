@@ -195,28 +195,12 @@ namespace Bangazon.Controllers
             return _context.Order.Any(e => e.OrderId == id);
         }
 
-        /*
-        // GET: Orders/DeleteItem/5
-        public async Task<IActionResult> DeleteItemFromCart(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+       
+        // POST: Orders/DeleteItem/5 
+        //The following code deletes a single item from the cart. It does not add an item back into the
+        //quantity of the table because the item is actually not removed from the database until the item is actually purchased. 
+        //This delete is a separate method than the above which is left for deleting whole orders. 
 
-            var order = await _context.Order
-                .Include(p => p.OrderProducts)
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-        */
-        // POST: Orders/DeleteItem/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteItemFromCart(int prodId)
@@ -230,16 +214,11 @@ namespace Bangazon.Controllers
                .ThenInclude(op => op.Product)
                .FirstOrDefaultAsync(m => m.UserId == currentUser.Id.ToString() && m.PaymentTypeId == null);
 
-            OrderProduct orderProduct =  await _context.OrderProduct
-               
+            OrderProduct orderProduct =  await _context.OrderProduct 
             .FirstOrDefaultAsync(op => op.OrderId == order.OrderId && op.ProductId == prodId);
-
-
             _context.OrderProduct.Remove(orderProduct);
              await _context.SaveChangesAsync(); 
             return RedirectToAction(nameof(Details));
-             
-
 
         }
 

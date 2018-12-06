@@ -26,18 +26,14 @@
 
             </dd>
 
+@*The code below links the controller method to the view targeting a single item in the cart*@
             @using (Html.BeginForm("DeleteItemFromCart", "Orders"))
             {
                 <input type="hidden" name="prodId"  value="@item.Product.ProductId" />
 
-                <input type="submit" />
+                <input type="submit" value="Remove Item" />
             }
-            @*
-            <form asp-action="DeleteItemFromCart">
-                @Html.ActionLink("DeleteItemFromCart", "DeleteItemFromCart", new { id = item.Product.ProductId })
-                <input type="hidden" asp-route-id="@item.Product.ProductId" />
-                <a asp-area="" asp-controller="Orders" asp-action="DeleteItemFromCart" asp-route-id="@item.Product.ProductId" class="btn-success" value="Remove from Order">Delete </a> |
-            </form> *@
+           
         }
     </dl>
 </div>
