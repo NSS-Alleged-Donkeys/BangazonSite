@@ -195,6 +195,35 @@ namespace Bangazon.Controllers
             return _context.Order.Any(e => e.OrderId == id);
         }
 
+       
+        // POST: Orders/DeleteItem/5 
+        //The following code deletes a single item from the cart. It does not add an item back into the
+        //quantity of the table because the item is actually not removed from the database until the item is actually purchased. 
+        //This delete is a separate method than the above which is left for deleting whole orders. 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteItemFromCart(int prodId)
+        {
+
+            var currentUser = await GetCurrentUserAsync();
+            Order order = await _context.Order
+               .Include(o => o.PaymentType)
+               .Include(o => o.User)
+               .Include(o => o.OrderProducts)
+               .ThenInclude(op => op.Product)
+               .FirstOrDefaultAsync(m => m.UserId == currentUser.Id.ToString() && m.PaymentTypeId == null);
+
+            OrderProduct orderProduct =  await _context.OrderProduct 
+            .FirstOrDefaultAsync(op => op.OrderId == order.OrderId && op.ProductId == prodId);
+            _context.OrderProduct.Remove(orderProduct);
+             await _context.SaveChangesAsync(); 
+            return RedirectToAction(nameof(Details));
+
+        }
+
+
+
         //POST: 
         [Authorize]
         public async Task<IActionResult> AddToCart(int id)
