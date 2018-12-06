@@ -8,6 +8,5 @@ namespace Bangazon.Models.OrderViewModels
 
         public List<OrderLineItem> LineItems { get; set; }
 
-        public List<OrderProduct> orderProducts { get; set; }
     }
 }
