@@ -12,16 +12,28 @@
     <dl class="dl-horizontal">
         @foreach (var item in Model.LineItems)
         {
-            
-        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">
-            @item.Product.Title
-        </a>
-        <dd>
-            @item.Units
-        </dd>
-        <dd>
-            @item.Cost
-        </dd>
+
+            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.ProductId">
+                @item.Product.Title
+            </a>
+            <dd>
+                @item.Units
+            </dd>
+            <dd>
+                @item.Cost
+            </dd>
+            <dd>
+
+            </dd>
+
+@*The code below links the controller method to the view targeting a single item in the cart*@
+            @using (Html.BeginForm("DeleteItemFromCart", "Orders"))
+            {
+                <input type="hidden" name="prodId"  value="@item.Product.ProductId" />
+
+                <input type="submit" value="Remove Item" />
+            }
+           
         }
     </dl>
 </div>
@@ -29,3 +41,4 @@
     <a asp-action="Edit" asp-route-id="@Model.Order.OrderId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
