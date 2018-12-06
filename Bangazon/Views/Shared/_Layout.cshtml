@@ -39,22 +39,21 @@
                     <li><a asp-area="" asp-controller="ProductTypes" asp-action="Index">Product Categories</a></li>
                     <li><a asp-area="" asp-controller="Orders" asp-action="Details">View Cart</a></li>
                     @*David Taylor
-            If user is signed in, show Sell Something link*@
+        If user is signed in, show Sell Something link*@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell Something</a></li>
-                    }
-                </ul>
-                    <partial name="_LoginPartial" />
-                    @if (SignInManager.IsSignedIn(User))
-                    {
+                        <li><a asp-area="" asp-controller="PaymentTypes" asp-action="Index">Payment Methods</a></li>
+
                         @using (@Html.BeginForm("Search", "Products", FormMethod.Get))
                         {
-                    <p class="text-info">
-                        @Html.TextBox("search")<input type="submit" value="search" placeholder="Search for a product"/>
-                    </p>
+                            <p class="text-info">
+                                @Html.TextBox("search")<input type="submit" value="search" placeholder="Search for a product" />
+                            </p>
                         }
-                    }       
+                    }
+                </ul>
+                    <partial name="_LoginPartial" />    
             </div>
         </div>
     </nav>
