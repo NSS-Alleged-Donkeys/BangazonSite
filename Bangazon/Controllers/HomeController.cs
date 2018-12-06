@@ -24,16 +24,16 @@ namespace Bangazon.Controllers
 
         public IActionResult Index()
         {
-            List<Product> products = _context.Product
-                                    .OrderByDescending(p => p.DateCreated)
-                                    .Take(20)
-                                    .ToList();
+            List<Product> products = _context.Product //Gets all of the products from the database 
+                                    .OrderByDescending(p => p.DateCreated) //Orders those products with the newest at the top
+                                    .Take(20) //Gets the first 20
+                                    .ToList(); //Turns that into a list of products and stores that in the variable 'products'
 
-            IndexViewModel viewModel = new IndexViewModel();
+            IndexViewModel viewModel = new IndexViewModel(); //Creates a new view model that we will pass to our view
 
-            viewModel.AllProducts = products;
+            viewModel.AllProducts = products; //Stores the new 20 products on the view model
 
-            return View(viewModel);
+            return View(viewModel); //Passes the view model with the 20 newest-added products to the view
         }
 
         public IActionResult About()

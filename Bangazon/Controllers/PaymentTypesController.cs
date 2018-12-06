@@ -16,16 +16,23 @@ namespace Bangazon.Controllers
     [Authorize]
     public class PaymentTypesController : Controller
     {
+        // Create variable to represent database
         private readonly ApplicationDbContext _context;
 
+        // David Taylor
+        // Create variable to represent User Data
         private readonly UserManager<ApplicationUser> _userManager;
 
+        // David Taylor
+        // Create component to get current user from the _userManager variable
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        public PaymentTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        // Pass in arguments from private varaibles to be used publicly
+        public PaymentTypesController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
-            _context = context;
             _userManager = userManager;
+            _context = context;
         }
 
         // GET: PaymentTypes
@@ -56,12 +63,15 @@ namespace Bangazon.Controllers
             return View(paymentType);
         }
 
+        // David Taylor
         // GET: PaymentTypes/Create
         public IActionResult Create()
         {
+            // Return view of create form without instance of user data
             return View();
         }
 
+        // David Taylor
         // POST: PaymentTypes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -69,20 +79,33 @@ namespace Bangazon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PaymentTypeCreateViewModel viewModel)
         {
-
+            // Remove user and userId
             ModelState.Remove("PaymentType.UserId");
             ModelState.Remove("PaymentType.User");
 
-
+            // Check if model state is valid
             if (ModelState.IsValid)
             {
+                // Get current user
                 var user = await GetCurrentUserAsync();
+
+                // Add user to viewmodel
                 viewModel.PaymentType.User = user;
+
+                // Add userId to view model
                 viewModel.PaymentType.UserId = user.Id;
+
+                // Add payment type in form to view model
                 _context.PaymentType.Add(viewModel.PaymentType);
+
+                // Save payment type in database
                 await _context.SaveChangesAsync();
+
+                // Redirect to Index
                 return RedirectToAction(nameof(Index));
             }
+
+            // return view model
             return View(viewModel);
         }
 

@@ -50,19 +50,16 @@ namespace Bangazon.Controllers
         //GET: Products/?search="iPod"
         public IActionResult Search(string search)
         {
-            //Gets all products from database, returns only those that contain the search query, and sort in alphabetical order  
-            List<Product> products = _context.Product
-                                    .Where(p => p.Title.Contains(search))
-                                    .OrderBy(p => p.Title)
-                                    .ToList();
+            List<Product> products = _context.Product //Gets all products from database 
+                                    .Where(p => p.Title.Contains(search)) //Filters the ones thats that contain what the search contains
+                                    .OrderBy(p => p.Title) //Orders them in alphabetical order
+                                    .ToList(); //Turns results into a list
 
-            //Creates new view model
-            AllProductsViewModel viewModel = new AllProductsViewModel();
+            AllProductsViewModel viewModel = new AllProductsViewModel(); //Creates new view model
+          
+            viewModel.AllProducts = products; //Attaches the searched products to the view model
 
-            //Attaches the searched products to the view model
-            viewModel.AllProducts = products;
-
-            return View(viewModel);
+            return View(viewModel); //Sends the view model to the view
         }
 
         // GET: Products/Details/5
@@ -82,12 +79,14 @@ namespace Bangazon.Controllers
                 return NotFound();
             }
 
+            // Create instance of view model to hold previously defined variable
             ProductDetailViewModel viewModel = new ProductDetailViewModel();
             viewModel.product = product;
 
             return View(viewModel);
         }
 
+        // David Taylor
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -133,6 +132,7 @@ namespace Bangazon.Controllers
             return View(viewModel);
         }
 
+        // David Taylor
         // POST: Products/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.

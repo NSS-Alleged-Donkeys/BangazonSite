@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿// David Taylor
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +13,7 @@ namespace Bangazon.Models.ProductViewModels
 
         public Product product { get; set; }
 
+        // Make a select list item for productTypes for dropdown
         public List<SelectListItem> productTypes { get; set; }
     }
 }
